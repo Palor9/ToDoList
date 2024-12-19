@@ -1,14 +1,4 @@
-﻿using ToDoList;
-using System.Threading.Tasks;
-using System.IO;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-using System.Net;
-using System.Text;
-using System.Collections.Specialized;
-using ToDoList.Server;
-using TrySQLite.DataBase;
+﻿using ToDoList.Server;
 
 namespace TrySQLite
 {
@@ -19,7 +9,7 @@ namespace TrySQLite
 
         public static async Task Main()
         {
-            Server server = new Server(hostID, connectionString); 
+            Server server = new Server(hostID, connectionString);
             await server.Start();                                 //Запуск сервера
         }
 

@@ -10,6 +10,7 @@ namespace ToDoList.dataBase.Models
     {
         public int id;
         public string name;
+        public int userID;
     }
 
     public class UserDB ///Модель для создания пользователя 
