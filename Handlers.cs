@@ -47,7 +47,7 @@ namespace ToDoList.Handlers
         {
             HttpListenerRequest request = context.Request;
             HttpListenerResponse response = context.Response; //Ответ на запрос от сервера
-
+            
             var authId = request.Headers.Get("id");
             
             if (authId == null)
@@ -56,7 +56,24 @@ namespace ToDoList.Handlers
                 context.Response.Close();
             }
             
-            var infoRes = await ReadAllTasksAsync(Convert.ToInt32(authId)); //Чтение всех записей
+            var queryParams = request.QueryString; //Параметры запроса
+            var limit = queryParams.Get("limit"); //(https://example.com/page?param1=value1&param2=value2) 
+            var offset = queryParams.Get("offset"); //для передачи данных на сервер
+            var query = queryParams.Get("query");
+            int limitInt, offsetInt; // Лимит вывода записей из базы и страниц
+
+            if (!int.TryParse(limit, out limitInt)) //Дефолтные значения
+            {
+                limitInt = 20;
+            }
+
+            if (!int.TryParse(offset, out offsetInt)) //Дефолтные значения
+            {
+                offsetInt = 0;
+            }
+            
+            var infoRes = await ReadAllTasksAsync
+                (Convert.ToInt32(authId), limitInt, offsetInt, query); //Чтение всех записей
             
             if (infoRes.Count != null)
             {
