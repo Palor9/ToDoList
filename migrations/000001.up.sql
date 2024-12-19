@@ -1,0 +1,1 @@
+﻿alter table tasks Add column user_id integer;
