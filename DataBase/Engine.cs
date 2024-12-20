@@ -60,18 +60,25 @@ namespace TrySQLite.DataBase
 
         }
 
-        public async Task<List<TaskDB>> ReadAllTasksAsync(int userId)
+        public async Task<List<TaskDB>> ReadAllTasksAsync(int userId, int limit, int offset, string query)
         {
             using var connection = new NpgsqlConnection(connectionString);
             await connection.OpenAsync();
             using var command = connection.CreateCommand();
-            command.CommandText =
-                @"
+            command.CommandText = 
+            @"
                 SELECT *
                 FROM tasks
-                WHERE user_id = @user_id;
+                WHERE user_id = @user_id
             "; //Поиск по полю user_id
 
+            if (!string.IsNullOrEmpty(query))
+            {
+                command.CommandText += "AND (name ILIKE @query) ";
+                command.Parameters.AddWithValue("@query", "%" + query + "%");
+            }
+            command.CommandText += " ORDER BY id DESC LIMIT " + limit + " OFFSET " + limit * offset + ";";
+            
             command.Parameters.AddWithValue("@user_id", userId); //Запись 
             using var reader = await command.ExecuteReaderAsync();
 
